@@ -33,11 +33,31 @@ public class Operation {
         System.out.println(numbers);
         System.out.println(operators);
         float result=0;
-        for (int k=0; k<operators.size(); k++){
-            result=operate(numbers.get(k), numbers.get(k+1), operators.get(k));
+        for (int g=0; g<=1; g++){
 
-            numbers.set(k+1, result);
+            for (int k=0; k<operators.size(); k++){
+
+                //(g==0 & (operators.get(k).equals("*")) || operators.get(k).equals("/") ) || (g==1 & (operators.get(k).equals("+")) || operators.get(k).equals("-") )
+                if ( (g==0 & (operators.get(k).equals("*")) || operators.get(k).equals("/") ) || (g==1 & (operators.get(k).equals("+")) || operators.get(k).equals("-") ) ){
+                    result=operate(numbers.get(k), numbers.get(k+1), operators.get(k));
+                    System.out.println("result="+result);
+                    if(g==0){
+                        operators.remove(k);
+                        numbers.remove(k);
+                        numbers.set(k, result);
+
+
+                    }else {
+                        numbers.set(k+1, result);
+                    }
+
+
+
+                }
+
+            }
         }
+
         return result;
 
     }
