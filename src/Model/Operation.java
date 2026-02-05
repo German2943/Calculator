@@ -33,31 +33,42 @@ public class Operation {
         System.out.println(numbers);
         System.out.println(operators);
         float result=0;
-        for (int g=0; g<=1; g++){
+        //result=operate(numbers.get(k), numbers.get(k+1), operators.get(k));
+        //numbers.set(k+1, result);
+        ArrayList<String> expression=new ArrayList<>();
+        int num=0;
+        int op=0;
+        for(int t=1; t<operators.size()+numbers.size()+1; t++){
+            if(t%2!=0){
+                expression.add(String.valueOf(numbers.get(num)));
+                num++;
+            }else {
+                expression.add(operators.get(op));
+                op++;
+            }
 
-            for (int k=0; k<operators.size(); k++){
-
-                //(g==0 & (operators.get(k).equals("*")) || operators.get(k).equals("/") ) || (g==1 & (operators.get(k).equals("+")) || operators.get(k).equals("-") )
-                if ( (g==0 & (operators.get(k).equals("*")) || operators.get(k).equals("/") ) || (g==1 & (operators.get(k).equals("+")) || operators.get(k).equals("-") ) ){
-                    result=operate(numbers.get(k), numbers.get(k+1), operators.get(k));
-                    System.out.println("result="+result);
-                    if(g==0){
-                        operators.remove(k);
-                        numbers.remove(k);
-                        numbers.set(k, result);
-
-
-                    }else {
-                        numbers.set(k+1, result);
-                    }
-
-
-
-                }
-
+        }
+        for (int m=0; m<expression.size(); m++){
+            if (expression.get(m).equals("*") || expression.get(m).equals("/")){
+                result=operate(Float.parseFloat(expression.get(m-1)), Float.parseFloat(expression.get(m+1)), expression.get(m));
+                expression.remove(m-1);
+                expression.remove(m-1);
+                expression.set(m-1, String.valueOf(result));
+                m=0;
+            }
+        }
+        for (int n=0; n<expression.size(); n++){
+            if (expression.get(n).equals("+") || expression.get(n).equals("-")){
+                result=operate(Float.parseFloat(expression.get(n-1)), Float.parseFloat(expression.get(n+1)), expression.get(n));
+                expression.remove(n-1);
+                expression.remove(n-1);
+                expression.set(n-1, String.valueOf(result));
             }
         }
 
+        System.out.println(expression);
+
+        result=operate(Float.parseFloat(expression.get(0)), Float.parseFloat(expression.get(2)), expression.get(1));
         return result;
 
     }
