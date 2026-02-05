@@ -4,7 +4,7 @@ import Model.Operation;
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-        Operation op=new Operation("1+2*10-2/2");
+        Operation op=new Operation("6+9*9-45/3");
 
         System.out.println(op.getResult());
     }
