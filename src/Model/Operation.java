@@ -16,6 +16,9 @@ public class Operation {
 
     public float getResult(String input){
         ArrayList<String> expression=spliter(input, operations);
+        if(expression.size()==1){
+            return Float.parseFloat(expression.getFirst());
+        }
 
         float result=0;
         for (int m=0; m<expression.size(); m++){
@@ -38,7 +41,7 @@ public class Operation {
             }
         }
 
-        System.out.println(expression);
+
 
 
         return result;
@@ -72,8 +75,7 @@ public class Operation {
             }
         }
         numbers.add(Float.parseFloat(input.substring(lastOperator+1)));
-        System.out.println(numbers);
-        System.out.println(operators);
+
 
         //result=operate(numbers.get(k), numbers.get(k+1), operators.get(k));
         //numbers.set(k+1, result);
@@ -93,30 +95,33 @@ public class Operation {
         return expression;
     }
 
-    public ArrayList<String> parenthesisGroups(){
+    public void parenthesisGroups(){
 
-        ArrayList<String> expression=new ArrayList<>();
-        String[] neutral1={"/","*"};
-        String[] neutral2={"+","-"};
+
         String[] splited=input.split("");
         int lastOpen=0;
 
         for (int charac=0; charac< splited.length; charac++){
+            splited=input.split("");
             if (splited[charac].equals("(")){
                 lastOpen=charac;
+                while (splited[charac+1].equals("(")){
+                    lastOpen=charac+1;
+                    charac=charac+1;
+                }
+
             } else if (splited[charac].equals(")")) {
 
-                expression.add(input.substring(lastOpen+1, charac));
-                expression.add(String.valueOf(getResult(input.substring(lastOpen+1, charac))));
-                if(lastOpen!=0){
-                    if (!Arrays.asList(operations).contains(splited[lastOpen-1]) || splited[charac].equals("(")){
 
-                    }
-                }
+                input=input.substring(0,lastOpen)+(getResult(input.substring(lastOpen+1, charac)))+input.substring(charac+1, input.length());
+                lastOpen=0;
+                charac=0;
+                System.out.println(input);
+
             }
-
+            splited=input.split("");
         }
-        return expression;
+
     }
 
     public ArrayList<Float> getNumbers() {
