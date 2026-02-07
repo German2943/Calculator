@@ -9,9 +9,15 @@ public class Operation {
     private String[] operations={"*","/","+","-"};
     private ArrayList<Float> numbers=new ArrayList<>();
     private ArrayList<String> operators=new ArrayList<>();
+    private float result;
 
     public Operation(String input){
         this.input=input;
+
+        parenthesisGroups();
+        this.result=getResult(this.input);
+        System.out.println(result);
+
     }
 
     public float getResult(String input){
@@ -99,8 +105,9 @@ public class Operation {
 
 
         String[] splited=input.split("");
-        int lastOpen=0;
-
+        int lastOpen=splited.length-1;
+        int lastClose=splited.length-1;
+        /*
         for (int charac=0; charac< splited.length; charac++){
             splited=input.split("");
             if (splited[charac].equals("(")){
@@ -121,6 +128,36 @@ public class Operation {
             }
             splited=input.split("");
         }
+
+         */
+
+        for(int charac=splited.length-1; charac>=0; charac--){
+            splited=input.split("");
+            if (splited[charac].equals("(")){
+
+                lastOpen=charac;
+                while (!splited[charac].equals(")")){
+
+                    charac++;
+
+
+
+                }
+                if(splited[charac].equals(")")){
+
+                    input=input.substring(0,lastOpen)+(getResult(input.substring(lastOpen+1, charac)))+input.substring(charac+1, input.length());
+
+                    charac=input.length()-1;
+                    System.out.println(input);
+
+                }
+
+
+
+            }
+
+        }
+
 
     }
 
