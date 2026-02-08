@@ -74,17 +74,61 @@ public class Operation {
                 if (charac==0){
 
                 }else {
-                    numbers.add(Float.parseFloat(input.substring(lastOperator+1, charac)));
-                    operators.add(splited[charac]);
-                    lastOperator=charac;
+                    float neutral=0;
+                    if(Arrays.asList(operations).contains(splited[charac+1])){
+
+
+                        String op1=splited[charac];
+                        String op2=splited[charac+1];
+                        neutral=(op1.equals("*") || op1.equals("/") || op2.equals("*") || op2.equals("/"))? 1:0;
+                        if (neutral==0){
+                            numbers.add(Float.parseFloat(input.substring(lastOperator+1, charac)));
+
+                            operators.add(splited[charac]);
+                            numbers.add((float)0);
+                        } else if (op2.equals("-")) {
+                            numbers.add((float)0);
+                            operators.add("-");
+                            numbers.add((float)1);
+                            operators.add("*");
+                            numbers.add(Float.parseFloat(input.substring(lastOperator+1, charac)));
+                            operators.add(splited[charac]);
+
+                        }else {
+                            numbers.add((float)0);
+                            operators.add("+");
+                            numbers.add((float)1);
+                            operators.add("*");
+                            numbers.add(Float.parseFloat(input.substring(lastOperator+1, charac)));
+                            operators.add(splited[charac]);
+
+                        }
+                        System.out.println(numbers);
+                        System.out.println(operators);
+                        lastOperator=charac+1;
+                        charac=lastOperator;
+
+
+
+
+                    }else {
+                        float number=Float.parseFloat(input.substring(lastOperator+1, charac));
+                        numbers.add(number);
+                        operators.add(splited[charac]);
+                        lastOperator=charac;
+                    }
+
+
+
                 }
             }
         }
+
         numbers.add(Float.parseFloat(input.substring(lastOperator+1)));
 
+        System.out.println(numbers);
+        System.out.println(operators);
 
-        //result=operate(numbers.get(k), numbers.get(k+1), operators.get(k));
-        //numbers.set(k+1, result);
         ArrayList<String> expression=new ArrayList<>();
         int num=0;
         int op=0;
@@ -105,35 +149,19 @@ public class Operation {
 
 
         String[] splited=input.split("");
-        int lastOpen=splited.length-1;
-        int lastClose=splited.length-1;
-        /*
-        for (int charac=0; charac< splited.length; charac++){
-            splited=input.split("");
-            if (splited[charac].equals("(")){
-                lastOpen=charac;
-                while (splited[charac+1].equals("(")){
-                    lastOpen=charac+1;
-                    charac=charac+1;
-                }
-
-            } else if (splited[charac].equals(")")) {
-
-
-                input=input.substring(0,lastOpen)+(getResult(input.substring(lastOpen+1, charac)))+input.substring(charac+1, input.length());
-                lastOpen=0;
-                charac=0;
-                System.out.println(input);
-
-            }
-            splited=input.split("");
-        }
-
-         */
+        int lastOpen;
 
         for(int charac=splited.length-1; charac>=0; charac--){
             splited=input.split("");
             if (splited[charac].equals("(")){
+                String operator="";
+                String neutral="";
+                if (charac>0){
+                    operator= (!Arrays.asList(operations).contains(splited[charac-1]) || (!splited[charac-1].equals("(") ))? "*":"";
+
+                    neutral=(splited[charac-1].equals("+") || splited[charac-1].equals("-") || !splited[charac-1].equals("("))? "0":"";
+
+                }
 
                 lastOpen=charac;
                 while (!splited[charac].equals(")")){
@@ -145,7 +173,8 @@ public class Operation {
                 }
                 if(splited[charac].equals(")")){
 
-                    input=input.substring(0,lastOpen)+(getResult(input.substring(lastOpen+1, charac)))+input.substring(charac+1, input.length());
+
+                    input=input.substring(0,lastOpen)+operator+(getResult(neutral+input.substring(lastOpen+1, charac)))+input.substring(charac+1, input.length());
 
                     charac=input.length()-1;
                     System.out.println(input);
@@ -157,6 +186,7 @@ public class Operation {
             }
 
         }
+
 
 
     }
