@@ -16,7 +16,7 @@ public class Operation {
 
         parenthesisGroups();
         this.result=getResult(this.input);
-        System.out.println(result);
+        System.out.println("RESULTADO FINAL: "+ result);
 
     }
 
@@ -25,29 +25,43 @@ public class Operation {
         if(expression.size()==1){
             return Float.parseFloat(expression.getFirst());
         }
-
+        if (input.replaceAll("\\s+", "").isEmpty()){
+            return (float) 0;
+        }
+        System.out.println();
+        System.out.println("-----------------");
+        System.out.println();
+        System.out.println("GET RESULT METHOD");
+        System.out.println("Expression before */: "+expression);
         float result=0;
         for (int m=0; m<expression.size(); m++){
             if (expression.get(m).equals("*") || expression.get(m).equals("/")){
                 result=operate(Float.parseFloat(expression.get(m-1)), Float.parseFloat(expression.get(m+1)), expression.get(m));
+
                 expression.remove(m-1);
                 expression.remove(m-1);
                 expression.set(m-1, String.valueOf(result));
                 m=0;
+                System.out.println("Expression after */: "+expression);
             }
         }
-        System.out.println(expression);
+
         for (int n=0; n<expression.size(); n++){
             if (expression.get(n).equals("+") || expression.get(n).equals("-")){
                 result=operate(Float.parseFloat(expression.get(n-1)), Float.parseFloat(expression.get(n+1)), expression.get(n));
+
                 expression.remove(n-1);
                 expression.remove(n-1);
                 expression.set(n-1, String.valueOf(result));
                 n=0;
+                System.out.println("Expression after +-: "+expression);
             }
         }
 
-
+        System.out.println("Result="+result);
+        System.out.println();
+        System.out.println("-----------------");
+        System.out.println();
 
 
         return result;
@@ -65,16 +79,33 @@ public class Operation {
     }
 
     public ArrayList<String> spliter(String input, String[] characters){
+
+        System.out.println();
+        System.out.println("-----------------");
+        System.out.println();
+        System.out.println("SPLITER METHOD");
+        System.out.println("input="+input);
+        if (input.replaceAll("\\s+", "").isEmpty()){
+
+            return new ArrayList<>();
+        }
         String[] splited=input.split("");
         ArrayList<String> operators=new ArrayList<>();
         ArrayList<Float> numbers=new ArrayList<>();
         int lastOperator=-1;
         for (int charac=0; charac< splited.length; charac++){
             if (Arrays.asList(characters).contains(splited[charac])){
+                float neutral=0;
                 if (charac==0){
+                    if(splited[charac].equals("-") || splited[charac].equals("+")){
+                        numbers.add((float)0);
+                        operators.add(splited[charac]);
+                        lastOperator=charac;
+                    }
 
                 }else {
-                    float neutral=0;
+
+
                     if(Arrays.asList(operations).contains(splited[charac+1])){
 
 
@@ -82,13 +113,21 @@ public class Operation {
                         String op2=splited[charac+1];
                         neutral=(op1.equals("*") || op1.equals("/") || op2.equals("*") || op2.equals("/"))? 1:0;
                         if (neutral==0){
+
                             numbers.add(Float.parseFloat(input.substring(lastOperator+1, charac)));
 
                             operators.add(splited[charac]);
                             numbers.add((float)0);
+                            operators.add(op2);
+
                         } else if (op2.equals("-")) {
                             numbers.add((float)0);
-                            operators.add("-");
+                            String subOperator="-";
+                            if(!operators.isEmpty()){
+                                subOperator=(operators.getLast().equals("-"))? "+":"-";
+                            }
+
+                            operators.add(subOperator);
                             numbers.add((float)1);
                             operators.add("*");
                             numbers.add(Float.parseFloat(input.substring(lastOperator+1, charac)));
@@ -103,8 +142,8 @@ public class Operation {
                             operators.add(splited[charac]);
 
                         }
-                        System.out.println(numbers);
-                        System.out.println(operators);
+
+
                         lastOperator=charac+1;
                         charac=lastOperator;
 
@@ -117,17 +156,25 @@ public class Operation {
                         operators.add(splited[charac]);
                         lastOperator=charac;
                     }
-
-
+                    System.out.println();
+                    System.out.println("after dealing with collisions: "+numbers);
+                    System.out.println("after dealing with collisions: "+operators);
+                    System.out.println();
 
                 }
+
             }
+            System.out.println();
+            System.out.println("iteration result:"+numbers);
+            System.out.println("iteration result:"+operators);
+            System.out.println();
         }
 
         numbers.add(Float.parseFloat(input.substring(lastOperator+1)));
-
-        System.out.println(numbers);
-        System.out.println(operators);
+        System.out.println();
+        System.out.println("final array:"+numbers);
+        System.out.println("final array:"+operators);
+        System.out.println();
 
         ArrayList<String> expression=new ArrayList<>();
         int num=0;
@@ -142,11 +189,18 @@ public class Operation {
             }
 
         }
+        System.out.println("Expression="+expression);
+        System.out.println();
+        System.out.println("-----------------");
+        System.out.println();
         return expression;
     }
 
     public void parenthesisGroups(){
-
+        System.out.println();
+        System.out.println("-----------------");
+        System.out.println();
+        System.out.println("PARENTHESIS RECOGNITION");
 
         String[] splited=input.split("");
         int lastOpen;
@@ -157,9 +211,10 @@ public class Operation {
                 String operator="";
                 String neutral="";
                 if (charac>0){
-                    operator= (!Arrays.asList(operations).contains(splited[charac-1]) || (!splited[charac-1].equals("(") ))? "*":"";
+                    operator= (!Arrays.asList(operations).contains(splited[charac-1]) && (!splited[charac-1].equals("(") ))? "*":"";
 
-                    neutral=(splited[charac-1].equals("+") || splited[charac-1].equals("-") || !splited[charac-1].equals("("))? "0":"";
+                    neutral=((splited[charac-1].equals("+") || splited[charac-1].equals("-")) && !splited[charac-1].equals("("))? "0":"";
+
 
                 }
 
@@ -172,12 +227,13 @@ public class Operation {
 
                 }
                 if(splited[charac].equals(")")){
-
+                    System.out.println("input before: "+input);
+                    operator=(getResult(neutral+input.substring(lastOpen+1, charac))<(float) 0)? "0"+operator:operator;
 
                     input=input.substring(0,lastOpen)+operator+(getResult(neutral+input.substring(lastOpen+1, charac)))+input.substring(charac+1, input.length());
 
                     charac=input.length()-1;
-                    System.out.println(input);
+                    System.out.println("input after: "+input);
 
                 }
 
@@ -186,6 +242,9 @@ public class Operation {
             }
 
         }
+        System.out.println();
+        System.out.println("-----------------");
+        System.out.println();
 
 
 
