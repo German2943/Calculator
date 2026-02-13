@@ -6,10 +6,15 @@ import java.util.Deque;
 public class Calculator {
 
     private String input;
+    private double result;
 
 
-    public Calculator(){
+    public Calculator(String input){
         this.input=input;
+        String postCollision=collisionManagement(this.input);
+        this.result=evaluatePostFix(inFixToPostFix(postCollision));
+        System.out.println(result);
+
     }
 
     public double operate(double n1, double n2, String op){
@@ -38,12 +43,13 @@ public class Calculator {
     }
 
 
-    public String inFixToPostFix(String input){
-        StringBuilder output= new StringBuilder();
-        Deque<Character> stack=new ArrayDeque<>();
+    public Deque<String> inFixToPostFix(String input){
+        Deque<String> output= new ArrayDeque<>();
+        Deque<String> stack=new ArrayDeque<>();
 
         for(int i=0; i<input.length(); i++){
             String c=String.valueOf(input.charAt(i));
+            Character c1=input.charAt(i);
             if (c.equals(" ")){
                 continue;
             }
@@ -56,18 +62,62 @@ public class Calculator {
 
                 }
                 i--;
-                output.append(currentNumber);
+                output.addLast(currentNumber.toString());
 
 
                 
-            } else if (isOperator(c)) {
+            } else if (c.equals("(")) {
+                stack.addLast(c);
+                
+            } else if (c.equals(")")) {
+                while (!stack.getLast().equals("(") ){
+                    output.addLast(stack.getLast());
+                    stack.removeLast();
+                }
+                stack.removeLast();
 
+            } else if (isOperator(c)) {
+                while (!stack.isEmpty()  && precedence(stack.getLast())>=precedence(c)){
+                    output.addLast(stack.getLast());
+                    stack.removeLast();
+                }
+                stack.addLast(c);
+
+                
             }
 
         }
-        System.out.println(output);
+        while (!stack.isEmpty()){
+            output.addLast(stack.getLast());
+            stack.removeLast();
+        }
+        System.out.println(output.toString().trim());
 
-        return "";
+        return output;
+    }
+
+
+    public double evaluatePostFix(Deque<String> input){
+        Deque<String> stack=new ArrayDeque<>();
+
+        while (!input.isEmpty()){
+            if (!isOperator(input.getFirst())){
+                stack.addLast(input.getFirst());
+                input.removeFirst();
+            }else {
+                double b=Double.parseDouble(stack.getLast());
+                stack.removeLast();
+                double a=Double.parseDouble(stack.getLast());
+                stack.removeLast();
+                double result=operate(a, b, input.getFirst());
+                stack.addLast(String.valueOf(result));
+                input.removeFirst();
+            }
+
+        }
+
+        return Double.parseDouble(stack.getFirst());
+
     }
 
 
@@ -79,7 +129,7 @@ public class Calculator {
 
 
 
-    public String subcollisions(String e1, String e2){
+    public String collisions(String e1, String e2){
         String c=e1+e2;
         return switch (c) {
 
@@ -111,7 +161,7 @@ public class Calculator {
 
                 while (expression1.getFirst().equals("+") || expression1.getFirst().equals("-")){
 
-                    subOperator=subcollisions(subOperator, expression1.getFirst());
+                    subOperator= collisions(subOperator, expression1.getFirst());
                     expression1.removeFirst();
 
                     i++;

@@ -7,9 +7,9 @@ import java.util.Arrays;
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-        Calculator c=new Calculator();
-        c.inFixToPostFix("12.44");
-        System.out.println(c.collisionManagement("(1(+2)2)"));
+        Calculator c=new Calculator("90.5+(3-1)*3+8/2");
+
+
 
 
     }
