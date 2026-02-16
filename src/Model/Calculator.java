@@ -5,14 +5,10 @@ import java.util.Deque;
 
 public class Calculator {
 
-    private String input;
-    private double result;
-
 
     public Calculator(String input){
-        this.input=input;
-        String postCollision=collisionManagement(this.input);
-        this.result=evaluatePostFix(inFixToPostFix(postCollision));
+        String postCollision=collisionManagement(input);
+        double result = evaluatePostFix(inFixToPostFix(postCollision));
         System.out.println(result);
 
     }
@@ -146,8 +142,12 @@ public class Calculator {
 
 
     public String collisionManagement(String input){
-        input=input.replace("((","(");
-        input=input.replace("))",")");
+        input=input.replaceAll("\\s+", "");
+        input=input.replace("-(-", "(0-1)(0-");
+        input=input.replace("-(+", "(0-1)(0+");
+        input=input.replace("+(+", "(0+1)(0+");
+        input=input.replace("+(-", "(0+1)(0-");
+
 
 
         Deque<String> expression1=new ArrayDeque<>();
@@ -169,7 +169,11 @@ public class Calculator {
 
             expression1.removeFirst();
 
+
             if(subOperator.equals("-") || subOperator.equals("+")){
+                if(i==0){
+                    output.append("0");
+                }
 
                 while (expression1.getFirst().equals("+") || expression1.getFirst().equals("-")){
 
@@ -178,17 +182,23 @@ public class Calculator {
 
                     i++;
                 }
-                String previous=String.valueOf(output.charAt(output.length()-1));
+
+                String previous= String.valueOf(output.charAt(output.length()-1));
+
 
 
 
                 if (previous.equals("*") || previous.equals("/")){
-                    if (!expression1.getFirst().equals("(")){
-                        output.append("(").append(subOperator).append(expression1.getFirst()).append(")");
+                    if (expression1.getFirst().charAt(0)!=('(') ){
+
+                        output.append("(").append(subOperator).append("1)").append(expression1.getFirst());
+
                         expression1.removeFirst();
                     }else {
                         output.append("(").append(subOperator).append(expression1.getFirst()).append(0).append(")");
+                        //output=new StringBuilder(output.toString().replace("(0)", "0"));
                         expression1.removeFirst();
+
                     }
 
                     i++;
@@ -241,6 +251,9 @@ public class Calculator {
 
                 }
                 subOperator=aux1+subOperator;
+                if (prev.equals("(")){
+                    subOperator="1*"+subOperator;
+                }
 
             } else if (prev.equals("(") && isOperator(String.valueOf(subOperator.charAt(0))) ) {
 
