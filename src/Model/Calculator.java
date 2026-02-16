@@ -113,6 +113,7 @@ public class Calculator {
                 stack.addLast(String.valueOf(result));
                 input.removeFirst();
             }
+            System.out.println(stack);
 
         }
 
@@ -141,7 +142,14 @@ public class Calculator {
 
         };
     }
+
+
+
     public String collisionManagement(String input){
+        input=input.replace("((","(");
+        input=input.replace("))",")");
+
+
         Deque<String> expression1=new ArrayDeque<>();
 
         StringBuilder output=new StringBuilder();
@@ -154,9 +162,13 @@ public class Calculator {
 
 
         int iterations=expression1.size();
+
         for (int i=0; i< iterations; i++){
             String subOperator=expression1.getFirst();
+
+
             expression1.removeFirst();
+
             if(subOperator.equals("-") || subOperator.equals("+")){
 
                 while (expression1.getFirst().equals("+") || expression1.getFirst().equals("-")){
@@ -166,13 +178,41 @@ public class Calculator {
 
                     i++;
                 }
+                String previous=String.valueOf(output.charAt(output.length()-1));
+
+
+
+                if (previous.equals("*") || previous.equals("/")){
+                    if (!expression1.getFirst().equals("(")){
+                        output.append("(").append(subOperator).append(expression1.getFirst()).append(")");
+                        expression1.removeFirst();
+                    }else {
+                        output.append("(").append(subOperator).append(expression1.getFirst()).append(0).append(")");
+                        expression1.removeFirst();
+                    }
+
+                    i++;
+                    continue;
+
+                }
+
+
+
+
+
+
+
+
+
 
             }
+
             output.append(subOperator);
 
 
 
         }
+        System.out.println("output1:"+output);
 
         characters=output.toString().split("(?=[()])|(?<=[()])");
         output=new StringBuilder();
@@ -191,22 +231,28 @@ public class Calculator {
             String aux2="";
             String aux3="";
             String operator=String.valueOf(subOperator.charAt(0));
+
+
             if(subOperator.equals("(") ){
                 
                 if (i!=0){
-                    aux1=(!isOperator(prev) && !prev.equals("(") && !prev.equals(")"))? "*":"";
+                    aux1=((!isOperator(prev) && !prev.equals("(")) || prev.equals(")"))? "*":"";
+
+
                 }
                 subOperator=aux1+subOperator;
 
-            } else if (prev.equals("(") && isOperator(String.valueOf(subOperator.charAt(0)))) {
+            } else if (prev.equals("(") && isOperator(String.valueOf(subOperator.charAt(0))) ) {
 
                 aux2=(operator.equals("+") || operator.equals("-"))? "0":"1";
                 subOperator=aux2+subOperator;
             } else if (prev.equals(")")) {
 
-                    aux3=(Character.isDigit(subOperator.charAt(0)))? "*":"";
+                    aux3=(Character.isDigit(subOperator.charAt(0)) )? "*":"";
 
                 subOperator=aux3+subOperator;
+            } else if (i==0 && (operator.equals("+") || operator.equals("-"))) {
+                subOperator=0+subOperator;
             }
 
             prev=String.valueOf(subOperator.charAt(subOperator.length()-1));
@@ -217,9 +263,7 @@ public class Calculator {
         }
 
 
-
-
-
+        System.out.println("output2:"+output);
 
         return output.toString();
     }
