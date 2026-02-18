@@ -6,12 +6,17 @@ import java.util.Deque;
 public class Calculator {
 
 
-    public Calculator(String input){
+
+
+    public String Calculate(String input){
         String postCollision=collisionManagement(input);
         double result = evaluatePostFix(inFixToPostFix(postCollision));
-        System.out.println(result);
+        return String.valueOf(result);
 
     }
+
+
+
 
     public double operate(double n1, double n2, String op){
         return switch (op) {
