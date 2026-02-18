@@ -11,6 +11,7 @@ public class Controller {
         this.action=new Action();
         this.frame=new Viewport(action);
         this.calculator=new Calculator();
+        action.setCalculator(calculator);
         frame.setVisible(true);
 
 

@@ -21,6 +21,7 @@ public class Viewport  extends JFrame{
     private CalcBtn n7;
     private CalcBtn n8;
     private CalcBtn n9;
+    private CalcBtn n0;
     private CalcBtn plusBtn;
     private CalcBtn timesBtn;
     private CalcBtn parenthesisOpen;
@@ -37,29 +38,34 @@ public class Viewport  extends JFrame{
 
 
         jPanel1 = new javax.swing.JPanel();
-        n9 = new CalcBtn(white, () -> action.write(jTextField1, "9"));
-        n7 = new CalcBtn(white, () -> action.write(jTextField1, "7"));
-        n6 = new CalcBtn(white, () -> action.write(jTextField1, "6"));
-        minusBtn = new CalcBtn(white, () -> action.write(jTextField1, "-"));
-        plusBtn = new CalcBtn(white, () -> action.write(jTextField1, "+"));
-        dividedBtn = new CalcBtn(white, () -> action.write(jTextField1, "/"));
-        timesBtn = new CalcBtn(white, () -> action.write(jTextField1, "*"));
-        equalsBtn = new CalcBtn(white, () -> action.calculate());
-        n8 = new CalcBtn(white, () -> action.write(jTextField1, "8"));
-        n5 = new CalcBtn(white, () -> action.write(jTextField1, "5"));
-        n4 = new CalcBtn(white, () -> action.write(jTextField1, "4"));
-        n3 = new CalcBtn(white, () -> action.write(jTextField1, "3"));
-        n2 = new CalcBtn(white, () -> action.write(jTextField1, "2"));
-        n1 = new CalcBtn(white, () -> action.write(jTextField1, "1"));
+        jPanel1.setBackground(black);
+        n9 = new CalcBtn(orange, () -> action.write(jTextField1, "9"));
+        n7 = new CalcBtn(orange, () -> action.write(jTextField1, "7"));
+        n6 = new CalcBtn(orange, () -> action.write(jTextField1, "6"));
+        minusBtn = new CalcBtn(orange, () -> action.write(jTextField1, "-"));
+        plusBtn = new CalcBtn(orange, () -> action.write(jTextField1, "+"));
+        dividedBtn = new CalcBtn(orange, () -> action.write(jTextField1, "/"));
+        timesBtn = new CalcBtn(orange, () -> action.write(jTextField1, "*"));
+        equalsBtn = new CalcBtn(orange, () -> action.calculate(jTextField1));
+        n8 = new CalcBtn(orange, () -> action.write(jTextField1, "8"));
+        n5 = new CalcBtn(orange, () -> action.write(jTextField1, "5"));
+        n4 = new CalcBtn(orange, () -> action.write(jTextField1, "4"));
+        n3 = new CalcBtn(orange, () -> action.write(jTextField1, "3"));
+        n2 = new CalcBtn(orange, () -> action.write(jTextField1, "2"));
+        n1 = new CalcBtn(orange, () -> action.write(jTextField1, "1"));
+        n0 = new CalcBtn(orange, () -> action.write(jTextField1, "0"));
         jTextField1 = new javax.swing.JTextField();
-        dotBtn = new CalcBtn(white, () -> action.write(jTextField1, "."));
-        refreshBtn = new CalcBtn(white, () -> action.refresh());
-        parenthesisOpen = new CalcBtn(white, () -> action.write(jTextField1, "("));
-        parenthesisClose = new CalcBtn(white, () -> action.write(jTextField1, ")"));
+        jTextField1.setBackground(gray);
+        jTextField1.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        dotBtn = new CalcBtn(orange, () -> action.write(jTextField1, "."));
+        refreshBtn = new CalcBtn(orange, () -> action.refresh(jTextField1));
+        parenthesisOpen = new CalcBtn(orange, () -> action.write(jTextField1, "("));
+        parenthesisClose = new CalcBtn(orange, () -> action.write(jTextField1, ")"));
         n9.setText("9");
 
 
         n7.setText("7");
+        n0.setText("0");
 
 
         n6.setText("6");
@@ -124,6 +130,8 @@ public class Viewport  extends JFrame{
                                                 .addComponent(parenthesisOpen, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(parenthesisClose, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(n0, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                         .addGroup(jPanel1Layout.createSequentialGroup()
                                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -197,7 +205,8 @@ public class Viewport  extends JFrame{
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
                                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                                         .addComponent(parenthesisOpen, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(parenthesisClose, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                        .addComponent(parenthesisClose, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(n0, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
                                                 .addContainerGap())
                                         .addGroup(jPanel1Layout.createSequentialGroup()
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -222,7 +231,10 @@ public class Viewport  extends JFrame{
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+
+
         pack();
+
     }// </editor-fold>
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {

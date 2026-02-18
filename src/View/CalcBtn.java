@@ -11,6 +11,7 @@ public class CalcBtn extends JButton {
         setBackground(color);
 
         addActionListener(e -> action.run());
+        setFont(new Font("Segoe UI", Font.BOLD, 24));
     }
 
 }

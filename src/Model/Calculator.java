@@ -195,12 +195,14 @@ public class Calculator {
 
                 if (previous.equals("*") || previous.equals("/")){
                     if (expression1.getFirst().charAt(0)!=('(') ){
+                        System.out.println("access to if statement");
+                        output.append("((").append(subOperator).append("1)").append(expression1.getFirst()).append(")");
 
-                        output.append("(").append(subOperator).append("1)").append(expression1.getFirst());
 
                         expression1.removeFirst();
                     }else {
-                        output.append("(").append(subOperator).append(expression1.getFirst()).append(0).append(")");
+                        System.out.println("access to else statement");
+                        output.append("(").append(subOperator).append(expression1.getFirst()).append("+").append(0).append(")");
                         //output=new StringBuilder(output.toString().replace("(0)", "0"));
                         expression1.removeFirst();
 
