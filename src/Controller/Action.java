@@ -13,7 +13,13 @@ public class Action {
     }
 
     public void calculate(JTextField field){
+
         String result=calculator.Calculate(field.getText());
+        try {
+            Double.valueOf(result);
+        } catch (Exception e) {
+            result="SYNTAX ERROR";
+        }
         refresh(field);
         field.setText(result);
     }
@@ -23,6 +29,9 @@ public class Action {
     }
 
     public void write(JTextField field, String text){
+        if (field.getText().equals("SYNTAX ERROR")){
+            refresh(field);
+        }
         field.setText(field.getText()+text);
     }
 }

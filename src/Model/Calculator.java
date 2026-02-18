@@ -9,8 +9,20 @@ public class Calculator {
 
 
     public String Calculate(String input){
-        String postCollision=collisionManagement(input);
-        double result = evaluatePostFix(inFixToPostFix(postCollision));
+        double result;
+        try{
+            String postCollision=collisionManagement(input);
+            result = evaluatePostFix(inFixToPostFix(postCollision));
+            System.out.println("Result: "+result);
+            if(Double.isInfinite(result)){
+                throw new ArithmeticException("DIVISION BY ZERO OR INFINITE RESULT");
+            } else if (String.valueOf(result).isBlank()  ) {
+                throw new Exception("SYNTAX ERROR");
+            }
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+
         return String.valueOf(result);
 
     }
@@ -42,7 +54,6 @@ public class Calculator {
             default -> -1;
         };
     }
-
 
     public Deque<String> inFixToPostFix(String input){
         Deque<String> output= new ArrayDeque<>();
@@ -92,7 +103,7 @@ public class Calculator {
             output.addLast(stack.getLast());
             stack.removeLast();
         }
-        System.out.println(output.toString().trim());
+
 
         return output;
     }
@@ -114,7 +125,7 @@ public class Calculator {
                 stack.addLast(String.valueOf(result));
                 input.removeFirst();
             }
-            System.out.println(stack);
+
 
         }
 
@@ -148,10 +159,11 @@ public class Calculator {
 
     public String collisionManagement(String input){
         input=input.replaceAll("\\s+", "");
-        input=input.replace("-(-", "(0-1)(0-");
-        input=input.replace("-(+", "(0-1)(0+");
-        input=input.replace("+(+", "(0+1)(0+");
-        input=input.replace("+(-", "(0+1)(0-");
+        input=input.replace("-(-", "-1(0-");
+        input=input.replace("-(+", "-1(0+");
+        input=input.replace("+(+", "+1(0+");
+        input=input.replace("+(-", "+1(0-");
+
 
 
 
@@ -194,21 +206,39 @@ public class Calculator {
 
 
                 if (previous.equals("*") || previous.equals("/")){
-                    if (expression1.getFirst().charAt(0)!=('(') ){
-                        System.out.println("access to if statement");
-                        output.append("((").append(subOperator).append("1)").append(expression1.getFirst()).append(")");
 
+                    int h=0;
+                    while(!Character.isDigit(expression1.getFirst().charAt(h))){
 
-                        expression1.removeFirst();
-                    }else {
-                        System.out.println("access to else statement");
-                        output.append("(").append(subOperator).append(expression1.getFirst()).append("+").append(0).append(")");
-                        //output=new StringBuilder(output.toString().replace("(0)", "0"));
-                        expression1.removeFirst();
+                        output.append(expression1.getFirst().charAt(h));
+                        if(h==expression1.getFirst().length()-1){
+                            h=0;
+                            expression1.removeFirst();
+                            i++;
+                        }else {
+                            h++;
+                        }
+                        System.out.println(h);
 
                     }
+                    String sub;
+                    if (h==0){
+                        sub="";
+                    }else {
+                        sub=(isOperator(String.valueOf(expression1.getFirst().charAt(h-1))))? String.valueOf(expression1.getFirst().charAt(h-1)): "";
 
+                    }
+                    output.append("(0").append(collisions(subOperator, sub)).append(expression1.getFirst().charAt(h)).append(")");
+                    h++;
+                    while (h<expression1.getFirst().length()){
+                        output.append(expression1.getFirst().charAt(h));
+                        h++;
+                    }
+                    expression1.removeFirst();
                     i++;
+
+
+
                     continue;
 
                 }
@@ -229,7 +259,7 @@ public class Calculator {
 
 
         }
-        System.out.println("output1:"+output);
+
 
         characters=output.toString().split("(?=[()])|(?<=[()])");
         output=new StringBuilder();
@@ -283,7 +313,7 @@ public class Calculator {
         }
 
 
-        System.out.println("output2:"+output);
+
 
         return output.toString();
     }
