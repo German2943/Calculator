@@ -10,18 +10,11 @@ public class Calculator {
 
     public String Calculate(String input){
         double result;
-        try{
+
             String postCollision=collisionManagement(input);
+            postCollision=collisionManagement(postCollision);
             result = evaluatePostFix(inFixToPostFix(postCollision));
-            System.out.println("Result: "+result);
-            if(Double.isInfinite(result)){
-                throw new ArithmeticException("DIVISION BY ZERO OR INFINITE RESULT");
-            } else if (String.valueOf(result).isBlank()  ) {
-                throw new Exception("SYNTAX ERROR");
-            }
-        } catch (Exception e) {
-            return e.getMessage();
-        }
+
 
         return String.valueOf(result);
 
@@ -61,7 +54,7 @@ public class Calculator {
 
         for(int i=0; i<input.length(); i++){
             String c=String.valueOf(input.charAt(i));
-            Character c1=input.charAt(i);
+
             if (c.equals(" ")){
                 continue;
             }
@@ -158,11 +151,17 @@ public class Calculator {
 
 
     public String collisionManagement(String input){
+        System.out.println("raw input: "+input);
+        /*
         input=input.replaceAll("\\s+", "");
-        input=input.replace("-(-", "-1(0-");
-        input=input.replace("-(+", "-1(0+");
-        input=input.replace("+(+", "+1(0+");
-        input=input.replace("+(-", "+1(0-");
+        input=input.replace("-(-", "-(0-");
+        input=input.replace("-(+", "-(0+");
+        input=input.replace("+(+", "+(0+");
+        input=input.replace("+(-", "+(0-");
+
+         */
+
+
 
 
 
@@ -176,8 +175,9 @@ public class Calculator {
             expression1.addLast(c);
 
         }
+        System.out.println(expression1);
 
-
+        String previous="";
         int iterations=expression1.size();
 
         for (int i=0; i< iterations; i++){
@@ -197,10 +197,12 @@ public class Calculator {
                     subOperator= collisions(subOperator, expression1.getFirst());
                     expression1.removeFirst();
 
+
                     i++;
                 }
 
-                String previous= String.valueOf(output.charAt(output.length()-1));
+                previous= String.valueOf(output.charAt(output.length()-1));
+
 
 
 
@@ -218,7 +220,7 @@ public class Calculator {
                         }else {
                             h++;
                         }
-                        System.out.println(h);
+
 
                     }
                     String sub;
@@ -236,6 +238,7 @@ public class Calculator {
                     }
                     expression1.removeFirst();
                     i++;
+
 
 
 
@@ -259,6 +262,7 @@ public class Calculator {
 
 
         }
+        System.out.println("after collission management:"+output);
 
 
         characters=output.toString().split("(?=[()])|(?<=[()])");
@@ -288,7 +292,7 @@ public class Calculator {
 
                 }
                 subOperator=aux1+subOperator;
-                if (prev.equals("(")){
+                if (prev.equals("(") || isOperator(prev)){
                     subOperator="1*"+subOperator;
                 }
 
@@ -311,6 +315,7 @@ public class Calculator {
 
 
         }
+        System.out.println("after parenthesis management:"+output);
 
 
 
