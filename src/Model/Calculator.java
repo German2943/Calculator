@@ -2,8 +2,20 @@ package Model;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.HashMap;
 
 public class Calculator {
+    HashMap<String, Operator> pairs=new HashMap<>();
+
+    public Calculator(){
+        pairs.put("+", new Operator(1,0));
+        pairs.put("-", new Operator(1,0));
+        pairs.put("*", new Operator(2,0));
+        pairs.put("/", new Operator(2,0));
+        pairs.put("NEG", new Operator(3,1));
+        pairs.put("PLUS", new Operator(3,1));
+    }
+
 
 
 
@@ -12,7 +24,7 @@ public class Calculator {
         double result;
 
             String postCollision=collisionManagement(input);
-            postCollision=collisionManagement(postCollision);
+
             result = evaluatePostFix(inFixToPostFix(postCollision));
 
 
@@ -40,62 +52,49 @@ public class Calculator {
     public boolean isOperator(String c){
         return c.equals("+") || c.equals("-") || c.equals("*") || c.equals("/") ||  c.equals("++") || c.equals("-+") || c.equals("*+") || c.equals("/+") ||  c.equals("+-") || c.equals("--") || c.equals("*-") || c.equals("/-");
     }
-    private static int precedence(String op) {
-        return switch (op) {
-            case "+", "-", "++", "--", "+-", "-+" -> 1;
-            case "*", "/", "*+", "*-", "/+", "/-" -> 2;
-            default -> -1;
-        };
-    }
+
+
+
+
 
     public Deque<String> inFixToPostFix(String input){
         Deque<String> output= new ArrayDeque<>();
         Deque<String> stack=new ArrayDeque<>();
+        String[] split =input.split("");
+        for (String c: split){
+            if (Character.isDigit(c.charAt(0)) || c.equals(".")){
+                output.addLast(c);
+                
+            } else if (isOperator(c)) {
+                while (!stack.isEmpty() && !stack.getLast().equals("(") &&  isOperator(stack.getLast()) &&
+                        (pairs.get(stack.getLast()).getPrecedence()>pairs.get(c).getPrecedence()
+                || pairs.get(stack.getLast()).getPrecedence()==pairs.get(c).getPrecedence() &&
+                                pairs.get(c).associativity==Associativity.LEFT)){
 
-        for(int i=0; i<input.length(); i++){
-            String c=String.valueOf(input.charAt(i));
 
-            if (c.equals(" ")){
-                continue;
-            }
-            if (Character.isDigit(input.charAt(i)) || input.charAt(i)=='.'){
-                StringBuilder currentNumber= new StringBuilder();
-                while(i<input.length() && (Character.isDigit(input.charAt(i)) || input.charAt(i) == '.')){
-                    currentNumber.append(input.charAt(i));
 
-                    i++;
+                    output.addLast(stack.getLast());
+                    stack.removeLast();
 
                 }
-                i--;
-                output.addLast(currentNumber.toString());
-
-
-                
+                stack.addLast(c);
             } else if (c.equals("(")) {
                 stack.addLast(c);
-                
             } else if (c.equals(")")) {
-                while (!stack.getLast().equals("(") ){
+                while(!stack.isEmpty() && !stack.getLast().equals("(")){
                     output.addLast(stack.getLast());
                     stack.removeLast();
                 }
-                stack.removeLast();
-
-            } else if (isOperator(c)) {
-                while (!stack.isEmpty()  && precedence(stack.getLast())>=precedence(c)){
-                    output.addLast(stack.getLast());
-                    stack.removeLast();
-                }
-                stack.addLast(c);
-
-                
+                if (!stack.isEmpty()) stack.removeLast();
             }
-
         }
+
         while (!stack.isEmpty()){
             output.addLast(stack.getLast());
             stack.removeLast();
         }
+
+
 
 
         return output;
@@ -150,174 +149,29 @@ public class Calculator {
 
 
 
+
     public String collisionManagement(String input){
-        System.out.println("raw input: "+input);
-        /*
-        input=input.replaceAll("\\s+", "");
-        input=input.replace("-(-", "-(0-");
-        input=input.replace("-(+", "-(0+");
-        input=input.replace("+(+", "+(0+");
-        input=input.replace("+(-", "+(0-");
-
-         */
-
-
-
-
-
-
-        Deque<String> expression1=new ArrayDeque<>();
+        String[] expression=input.split("(?<=[+\\-])|(?=[+\\-])");
 
         StringBuilder output=new StringBuilder();
-        String[] characters=input.split("(?=[-+*/])|(?<=[-+*/])");
-
-        for(String c:characters){
-            expression1.addLast(c);
-
-        }
-        System.out.println(expression1);
-
-        String previous="";
-        int iterations=expression1.size();
-
-        for (int i=0; i< iterations; i++){
-            String subOperator=expression1.getFirst();
-
-
-            expression1.removeFirst();
-
-
-            if(subOperator.equals("-") || subOperator.equals("+")){
-                if(i==0){
-                    output.append("0");
-                }
-
-                while (expression1.getFirst().equals("+") || expression1.getFirst().equals("-")){
-
-                    subOperator= collisions(subOperator, expression1.getFirst());
-                    expression1.removeFirst();
-
-
-                    i++;
-                }
-
-                previous= String.valueOf(output.charAt(output.length()-1));
 
 
 
 
+        for (int i=0; i<expression.length-1; i++){
 
-                if (previous.equals("*") || previous.equals("/")){
-
-                    int h=0;
-                    while(!Character.isDigit(expression1.getFirst().charAt(h))){
-
-                        output.append(expression1.getFirst().charAt(h));
-                        if(h==expression1.getFirst().length()-1){
-                            h=0;
-                            expression1.removeFirst();
-                            i++;
-                        }else {
-                            h++;
-                        }
-
-
-                    }
-                    String sub;
-                    if (h==0){
-                        sub="";
-                    }else {
-                        sub=(isOperator(String.valueOf(expression1.getFirst().charAt(h-1))))? String.valueOf(expression1.getFirst().charAt(h-1)): "";
-
-                    }
-                    output.append("(0").append(collisions(subOperator, sub)).append(expression1.getFirst().charAt(h)).append(")");
-                    h++;
-                    while (h<expression1.getFirst().length()){
-                        output.append(expression1.getFirst().charAt(h));
-                        h++;
-                    }
-                    expression1.removeFirst();
-                    i++;
-
-
-
-
-                    continue;
-
-                }
-
-
-
-
-
-
-
-
-
+            if ((expression[i].equals("+") || expression[i].equals("-")) && (expression[i+1].equals("+") || expression[i+1].equals("-"))){
+                expression[i+1]=collisions(expression[i], expression[i+1]);
+                continue;
 
             }
 
-            output.append(subOperator);
-
-
-
-        }
-        System.out.println("after collission management:"+output);
-
-
-        characters=output.toString().split("(?=[()])|(?<=[()])");
-        output=new StringBuilder();
-        expression1=new ArrayDeque<>();
-        for(String c:characters){
-            expression1.addLast(c);
-
-        }
-        String prev="";
-        iterations=expression1.size();
-        for (int i=0; i< iterations; i++){
-
-            String subOperator=expression1.getFirst();
-            expression1.removeFirst();
-            String aux1="";
-            String aux2="";
-            String aux3="";
-            String operator=String.valueOf(subOperator.charAt(0));
-
-
-            if(subOperator.equals("(") ){
-                
-                if (i!=0){
-                    aux1=((!isOperator(prev) && !prev.equals("(")) || prev.equals(")"))? "*":"";
-
-
-                }
-                subOperator=aux1+subOperator;
-                if (prev.equals("(") || isOperator(prev)){
-                    subOperator="1*"+subOperator;
-                }
-
-            } else if (prev.equals("(") && isOperator(String.valueOf(subOperator.charAt(0))) ) {
-
-                aux2=(operator.equals("+") || operator.equals("-"))? "0":"1";
-                subOperator=aux2+subOperator;
-            } else if (prev.equals(")")) {
-
-                    aux3=(Character.isDigit(subOperator.charAt(0)) )? "*":"";
-
-                subOperator=aux3+subOperator;
-            } else if (i==0 && (operator.equals("+") || operator.equals("-"))) {
-                subOperator=0+subOperator;
+            output.append(expression[i]);
+            if (i+1==expression.length-1){
+                output.append(expression[i+1]);
             }
 
-            prev=String.valueOf(subOperator.charAt(subOperator.length()-1));
-            output.append(subOperator);
-
-
-
         }
-        System.out.println("after parenthesis management:"+output);
-
-
 
 
         return output.toString();
