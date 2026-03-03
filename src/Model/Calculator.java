@@ -44,6 +44,7 @@ public class Calculator {
         };
     }
 
+
     public boolean isOperator(String c){
         return c.equals("+") || c.equals("-") || c.equals("*") || c.equals("/") ||  c.equals("++") || c.equals("-+") || c.equals("*+") || c.equals("/+") ||  c.equals("+-") || c.equals("--") || c.equals("*-") || c.equals("/-");
     }
