@@ -7,10 +7,10 @@ class Binary extends Expr{
     String operator;
     Expr rigth;
 
-    Binary(Expr left, String operator, Expr rigth){
+    Binary(Expr left, String operator, Expr right){
         this.left=left;
         this.operator=operator;
-        this.rigth=rigth;
+        this.rigth= right;
     }
 
 

@@ -49,6 +49,62 @@ public class Calculator {
         return c.equals("+") || c.equals("-") || c.equals("*") || c.equals("/") ||  c.equals("++") || c.equals("-+") || c.equals("*+") || c.equals("/+") ||  c.equals("+-") || c.equals("--") || c.equals("*-") || c.equals("/-");
     }
 
+    public ArrayList<Token> tokenizer(String input){
+
+        ArrayList<Token> tokens = new ArrayList<>();
+
+        for (int n = 0; n < input.length(); n++) {
+
+            char currentChar = input.charAt(n);
+
+            switch (currentChar) {
+                case '+':
+                    tokens.add(new Token(tokenType.PLUS, "+"));
+                    break;
+                case '-':
+                    tokens.add(new Token(tokenType.MINUS, "-"));
+                    break;
+                case '*':
+                    tokens.add(new Token(tokenType.STAR, "*"));
+                    break;
+                case '/':
+                    tokens.add(new Token(tokenType.SLASH, "/"));
+                    break;
+                case '(':
+                    tokens.add(new Token(tokenType.LPAREN, "("));
+                    break;
+                case ')':
+                    tokens.add(new Token(tokenType.RPAREN, ")"));
+                    break;
+                default:
+
+                    if (Character.isDigit(currentChar)) {
+
+                        StringBuilder number = new StringBuilder();
+
+                        while (n < input.length() &&
+                                (Character.isDigit(input.charAt(n)) || input.charAt(n) == '.')) {
+
+                            number.append(input.charAt(n));
+                            n++;
+                        }
+
+                        n--;
+                        tokens.add(new Token(tokenType.NUMBER, number.toString()));
+                    }
+            }
+        }
+        System.out.println(visual(tokens));
+        return tokens;
+    }
+    public ArrayList<String> visual(ArrayList<Token> tokens){
+        ArrayList<String> strings=new ArrayList<>();
+        for (Token token : tokens) {
+            strings.add(token.getArgument());
+        }
+        return strings;
+    }
+
 
 
 
