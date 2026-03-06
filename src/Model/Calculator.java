@@ -4,6 +4,7 @@ import java.util.*;
 
 public class Calculator {
     HashMap<String, Operator> pairs=new HashMap<>();
+    private ArrayList<Token> tokens;
 
     public Calculator(){
         pairs.put("+", new Operator(1,0));
@@ -95,8 +96,12 @@ public class Calculator {
             }
         }
         System.out.println(visual(tokens));
+
         return tokens;
     }
+
+
+
     public ArrayList<String> visual(ArrayList<Token> tokens){
         ArrayList<String> strings=new ArrayList<>();
         for (Token token : tokens) {
